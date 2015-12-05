@@ -1,6 +1,5 @@
 module TicTactToeLocalPvP where
 
-import Data.Char
 import Data.Function (on)
 import Control.Monad.Trans.Class
 import Control.Monad.Trans.State
@@ -13,9 +12,6 @@ main = do (winner, (_, finalBoard)) <- runStateT runUntilWin (X, clearBoard)
           putStrLn "The final board state is:"
           putStrLn $ pprintBoard finalBoard
 
--- not strictly necessary, but makes code more readable
-nextPlayer = gets fst
-theBoard = gets snd
 
 runUntilWin :: GameStateIO (Maybe Player)
 runUntilWin = do p <- nextPlayer

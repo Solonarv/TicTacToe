@@ -52,7 +52,9 @@ gridLines =  [zip (repeat x) [One ..] | x <- [One ..]]
       ++ [zip [One ..] [One ..]]
       ++ [zip [One ..] [Three, Two, One]]
 
-      
+possibleCoords :: [Pos]
+possibleCoords = [(x, y) | x <- [One ..], y <- [One ..]]
+
 checkWin :: Board -> Maybe Player
 checkWin b = case gridLines >>= joinPlayers . concatMap (maybeToList . getCellState b) of
                 [] -> Nothing

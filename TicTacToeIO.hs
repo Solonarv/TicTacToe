@@ -19,6 +19,10 @@ import TicTacToe
 
 type GameStateIO = StateT (Player, Board) IO
 
+-- not strictly necessary, but makes code more readable
+nextPlayer = gets fst
+theBoard = gets snd
+
 getMove :: [Pos] -> GameStateIO Pos
 getMove occupied = do 
     move <- lift getLine
