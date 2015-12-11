@@ -1,8 +1,11 @@
 {-# LANGUAGE
-    LambdaCase
+    LambdaCase,
+    ExistentialQuantification
     #-}
 
 module SuperSimpleFormatter where
+
+import Control.Arrow
 
 data Token = Replace | Literal String
 
@@ -28,4 +31,10 @@ replace toks [] = rejoin toks
 replace (Replace:toks) (x:xs) =  x ++ replace toks xs
 
 (%) :: String -> [String] -> String
-format % vals = replace (breakUp format) vals
+(%) = curry (first breakUp >>> uncurry replace)
+
+data ShowList = Nil | forall s. Show s => s ::$ ShowList
+
+toList :: ShowList -> [String]
+toList Nil = []
+toList (s ::$ l) = show s : toList l

@@ -2,6 +2,7 @@ module TicTacToePvC where
 
 import Data.Char
 import Data.Function (on)
+import Control.Arrow
 import Control.Monad.Trans.Class
 import Control.Monad.Trans.State
 
@@ -19,7 +20,7 @@ promptHumanSide :: IO Player
 promptHumanSide = do putStr "Player, choose a side: crosses (X) or circles (O): "
                      promptSide'
     where promptSide' = do l <- getLine
-                           case toUpper l of
+                           case map toUpper l of
                                "O" -> return O
                                "X" -> return X
                                otherwise -> putStr "Invalid input. Please enter X or O: " >> promptSide'
@@ -32,9 +33,9 @@ runUntilWin humanside = do p <- nextPlayer
                            newBoard <- if p == humanside
                                        then do move <- getMove $ occupiedFields b
                                                return $ setField move p b
-                                       else return setField (optimalMove p b) p b
+                                       else return $ setField (optimalMove p b) p b
                            case checkWin newBoard of
                                Nothing -> if isFull b
-                                          then return Nothing
+                                          then modify (second $ const newBoard) >> return Nothing
                                           else put (otherPlayer p, newBoard) >> runUntilWin humanside
-                               Just x  -> return $ Just x
+                               Just x  -> modify (second $ const newBoard) >> return (Just x)

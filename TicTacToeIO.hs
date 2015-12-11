@@ -5,6 +5,8 @@ module TicTacToeIO (
                     pprintBoard,
                     showCellState,
                     GameStateIO,
+                    nextPlayer,
+                    theBoard
                     ) where
 
 import Data.Char
@@ -20,7 +22,9 @@ import TicTacToe
 type GameStateIO = StateT (Player, Board) IO
 
 -- not strictly necessary, but makes code more readable
+nextPlayer :: GameStateIO Player
 nextPlayer = gets fst
+theBoard :: GameStateIO Board
 theBoard = gets snd
 
 getMove :: [Pos] -> GameStateIO Pos

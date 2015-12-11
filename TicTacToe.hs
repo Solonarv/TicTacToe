@@ -9,7 +9,7 @@ module TicTacToe where
 
 import Data.Function (on)
 import Data.Maybe (maybeToList)
-import qualified Data.Map as M
+import qualified Data.Map.Strict as M
 
 import SuperSimpleFormatter
 
@@ -38,6 +38,12 @@ setField = M.insert
 isFull :: Board -> Bool
 isFull = (== 9) . M.size
 
+isFirstTurn :: Board -> Bool
+isFirstTurn = (<= 1) . M.size
+
+isEmpty :: Board -> Bool
+isEmpty = M.null
+
 -- returns either a singleton list or []
 joinPlayers :: [Player] -> [Player]
 joinPlayers [x, y, z] | x == y && y == z = [x]
@@ -59,3 +65,10 @@ checkWin :: Board -> Maybe Player
 checkWin b = case gridLines >>= joinPlayers . concatMap (maybeToList . getCellState b) of
                 [] -> Nothing
                 s:_ -> Just s
+
+instance {-# OVERLAPS #-} Ord (Maybe Player) where
+    -- Just X < Nothing < Just O
+    p1 <= p2 = case p1 of
+        Just X -> True
+        Nothing -> p2 /= Just X
+        Just O -> p2 == Just O
